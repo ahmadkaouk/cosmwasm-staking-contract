@@ -29,7 +29,7 @@ pub fn instantiate(deps: DepsMut, _env: Env, info: MessageInfo, msg: Instantiate
         &Config {
             owner: info.sender,
             staking_token: deps.api.addr_validate(&msg.staking_token)?,
-            unbond_period: msg.unbond_period,
+            staking_period: msg.unbond_period,
             activity_interval: msg.activity_interval,
             penalty_percentage: msg.penalty_percentage,
         },
@@ -52,13 +52,13 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> R
         ExecuteMsg::Unbond { amount } => withdraw(deps, env, info, amount),
         ExecuteMsg::Claim {} => claim_rewards(deps, env, info),
         ExecuteMsg::UpdateConfig {
-            unbond_period,
+            staking_period,
             activity_interval,
             penalty_percentage,
         } => update_config(
             deps,
             info,
-            unbond_period,
+            staking_period,
             activity_interval,
             penalty_percentage,
         ),
@@ -209,7 +209,7 @@ fn withdraw(deps: DepsMut, env: Env, info: MessageInfo, amount: Uint128) -> Resu
 fn update_config(
     deps: DepsMut,
     info: MessageInfo,
-    unbond_period: Option<u64>,
+    staking_period: Option<u64>,
     activity_interval: Option<u64>,
     penalty_percentage: Option<u64>,
 ) -> Result {
@@ -218,7 +218,7 @@ fn update_config(
     if info.sender != config.owner {
         return Err(ContractError::PermissionDenied(info.sender.into_string()));
     }
-    config.unbond_period = unbond_period.unwrap_or(config.unbond_period);
+    config.staking_period = staking_period.unwrap_or(config.staking_period);
     config.activity_interval = activity_interval.unwrap_or(config.activity_interval);
     config.penalty_percentage = penalty_percentage.unwrap_or(config.penalty_percentage);
 
@@ -328,7 +328,7 @@ fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
         activity_interval: config.activity_interval,
         penalty_percentage: config.penalty_percentage,
         staking_token: config.staking_token.to_string(),
-        unbond_period: config.unbond_period,
+        unbond_period: config.staking_period,
     })
 }
 

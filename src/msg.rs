@@ -27,7 +27,7 @@ pub enum ExecuteMsg {
     DeadmanDelay { addr: String },
     /// Update Config
     UpdateConfig {
-        unbond_period: Option<u64>,
+        staking_period: Option<u64>,
         activity_interval: Option<u64>,
         penalty_percentage: Option<u64>,
     },

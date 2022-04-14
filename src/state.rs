@@ -17,7 +17,7 @@ pub struct Config {
    /// Contract addr of the token to stake 
     pub staking_token: Addr,
     /// Stake Duration to unbond tokens without penalty
-    pub unbond_period: u64,
+    pub staking_period: u64,
     /// Time interval to acknowledge that a user is still alive (in seconds)
     pub activity_interval: u64,
     /// The penalty percentage to send to admin account
