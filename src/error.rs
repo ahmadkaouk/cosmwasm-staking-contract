@@ -9,6 +9,8 @@ pub enum ContractError {
     PermissionDenied(String),
     #[error("Invalid amount, amount should be greater than zero")]
     InvalidAmount,
+    #[error("Insufficient funds")]
+    InsufficientFunds,
     #[error("Unauthorized")]
     Unauthorized {},
     #[error("Overflow on substruction: {0}")]

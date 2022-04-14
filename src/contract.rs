@@ -63,7 +63,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> R
             penalty_percentage,
         ),
         ExecuteMsg::KeepAlive => keep_alive(deps, env, info),
-        ExecuteMsg::DeadmanDelay { addr } => deadman_delay(addr),
+        ExecuteMsg::DeadmanDelay { addr } => deadman_delay(deps, env, info, addr),
     }
 }
 
@@ -153,6 +153,9 @@ fn withdraw(deps: DepsMut, env: Env, info: MessageInfo, amount: Uint128) -> Resu
         })
         .expect("error updating state");
 
+    if stake_info.amount < amount {
+        return Err(ContractError::InsufficientFunds);
+    }
     // Check if penalty is applied
     if stake_info.time_until > env.block.time.seconds() {
         let penalty = amount * Decimal::percent(config.penalty_percentage);
@@ -238,8 +241,58 @@ fn keep_alive(deps: DepsMut, env: Env, info: MessageInfo) -> Result {
     Ok(Response::default())
 }
 
-fn deadman_delay(addr: String) -> Result {
-    todo!()
+fn deadman_delay(deps: DepsMut, env: Env, info: MessageInfo, addr: String) -> Result {
+    let staker_addr = deps.api.addr_validate(&addr)?;
+    let config = CONFIG.load(deps.storage)?;
+    let stake_info = STAKE.load(deps.storage, &staker_addr)?;
+
+    // Only backup addr Owner is allowed to execute this actions
+    if stake_info.backup_addr != info.sender {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    // Allowed only if user is not active since activity_interval
+    if stake_info.last_time_active + config.activity_interval > env.block.time.seconds() {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    // Set inactive Staker amount to zero
+    STAKE.update(deps.storage, &staker_addr, |stake| {
+        if let Some(stake) = stake {
+            Ok(StakeInfo {
+                amount: Uint128::zero(),
+                ..stake
+            })
+        } else {
+            Err(StdError::generic_err("Addr not found"))
+        }
+    })?;
+
+    // update total bond amount
+    STATE
+        .update::<_, StdError>(deps.storage, |state| {
+            Ok(State {
+                total_bond_amount: state
+                    .total_bond_amount
+                    .checked_sub(stake_info.amount)
+                    .unwrap(),
+            })
+        })
+        .expect("error updating state");
+
+    // Send amount to the backup addr
+    let transfer = Cw20ExecuteMsg::Transfer {
+        recipient: stake_info.backup_addr.to_string(),
+        amount: stake_info.amount,
+    };
+
+    Ok(
+        Response::new().add_message(CosmosMsg::Wasm(WasmMsg::Execute {
+            contract_addr: config.staking_token.to_string(),
+            msg: to_binary(&transfer)?,
+            funds: vec![],
+        })),
+    )
 }
 
 fn claim_rewards(deps: DepsMut, env: Env, info: MessageInfo) -> Result {
