@@ -11,4 +11,6 @@ pub enum ContractError {
     InvalidAmount,
     #[error("Unauthorized")]
     Unauthorized {},
+    #[error("Overflow on substruction: {0}")]
+    SubstructionOverflow(String),
 }

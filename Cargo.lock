@@ -42,22 +42,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "79b110e31d47bd265e17ec88dd7328fcf40e1ee67a6131c1ab492f77fef8cd83"
 dependencies = [
  "digest",
- "ed25519-zebra 2.2.0",
+ "ed25519-zebra",
  "k256",
  "rand_core 0.5.1",
- "thiserror",
-]
-
-[[package]]
-name = "cosmwasm-crypto"
-version = "1.0.0-beta8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37e70111e9701c3ec43bfbff0e523cd4cb115876b4d3433813436dd0934ee962"
-dependencies = [
- "digest",
- "ed25519-zebra 3.0.0",
- "k256",
- "rand_core 0.6.3",
  "thiserror",
 ]
 
@@ -66,15 +53,6 @@ name = "cosmwasm-derive"
 version = "0.16.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0faf9bad5eb0a43a00406e64f8d33407a06bd1826fa976195a69db70e6c18d9d"
-dependencies = [
- "syn",
-]
-
-[[package]]
-name = "cosmwasm-derive"
-version = "1.0.0-beta8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "58bc2ad5d86be5f6068833f63e20786768db6890019c095dd7775232184fb7b3"
 dependencies = [
  "syn",
 ]
@@ -96,25 +74,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4a0d4e46ab20939af6366a71783324ae4babdedb111f0dd797d063a2e68718bc"
 dependencies = [
  "base64",
- "cosmwasm-crypto 0.16.7",
- "cosmwasm-derive 0.16.7",
- "forward_ref",
- "schemars",
- "serde",
- "serde-json-wasm",
- "thiserror",
- "uint",
-]
-
-[[package]]
-name = "cosmwasm-std"
-version = "1.0.0-beta8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "915ca82bd944f116f3a9717481f3fa657e4a73f28c4887288761ebb24e6fbe10"
-dependencies = [
- "base64",
- "cosmwasm-crypto 1.0.0-beta8",
- "cosmwasm-derive 1.0.0-beta8",
+ "cosmwasm-crypto",
+ "cosmwasm-derive",
  "forward_ref",
  "schemars",
  "serde",
@@ -129,7 +90,7 @@ version = "0.16.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c243d26ba6c49abb5ed69762648a9c664ba263debce425ad10603e7b8aa92ced"
 dependencies = [
- "cosmwasm-std 0.16.7",
+ "cosmwasm-std",
  "serde",
 ]
 
@@ -189,18 +150,18 @@ version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c1e867b9972b83b32e00e878dfbff48299ba26618dabeb19b9c56fae176dc225"
 dependencies = [
- "cosmwasm-std 0.16.7",
+ "cosmwasm-std",
  "schemars",
  "serde",
 ]
 
 [[package]]
-name = "cw-utils"
-version = "0.13.2"
+name = "cw0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "babd2c090f39d07ce5bf2556962305e795daa048ce20a93709eb591476e4a29e"
+checksum = "d759bb5418a3bdf091e1f1be17de2a15d95d2be4fee28045c2e461f4c6d9d1ca"
 dependencies = [
- "cosmwasm-std 1.0.0-beta8",
+ "cosmwasm-std",
  "schemars",
  "serde",
  "thiserror",
@@ -212,7 +173,7 @@ version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4d48454f96494aa1018556cd457977375cc8c57ef3e5c767cfa2ea5ec24b0258"
 dependencies = [
- "cosmwasm-std 0.16.7",
+ "cosmwasm-std",
  "cw-storage-plus",
  "schemars",
  "serde",
@@ -220,12 +181,12 @@ dependencies = [
 
 [[package]]
 name = "cw20"
-version = "0.13.2"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "356d364602c5fe763544ea00d485b825d6ef519a2fc6a3145528d7df3a603f40"
+checksum = "ac49b013ca1e355fd988cc1926acc9a16d7fd45cfb595ee330455582a788b100"
 dependencies = [
- "cosmwasm-std 1.0.0-beta8",
- "cw-utils",
+ "cosmwasm-std",
+ "cw0",
  "schemars",
  "serde",
 ]
@@ -278,21 +239,6 @@ dependencies = [
  "serde",
  "sha2",
  "thiserror",
-]
-
-[[package]]
-name = "ed25519-zebra"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "403ef3e961ab98f0ba902771d29f842058578bb1ce7e3c59dad5a6a93e784c69"
-dependencies = [
- "curve25519-dalek",
- "hex",
- "rand_core 0.6.3",
- "serde",
- "sha2",
- "thiserror",
- "zeroize",
 ]
 
 [[package]]
@@ -415,7 +361,7 @@ name = "my-first-contract"
 version = "0.1.0"
 dependencies = [
  "cosmwasm-schema",
- "cosmwasm-std 0.16.7",
+ "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus",
  "cw2",
